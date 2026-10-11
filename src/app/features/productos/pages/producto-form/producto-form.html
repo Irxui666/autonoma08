@@ -1,0 +1,16 @@
+<h2>{{ id() ? 'Editar producto' : 'Nuevo producto' }}</h2>
+@if (error()) { <div class="alerta" role="alert">{{ error() }}</div> }
+@if (cargando()) { <p role="status">Cargando datos…</p> } @else if (cargaFallida()) { <p>No se pudieron cargar los datos. Recargue la página para reintentar.</p> } @else if (!hayCategoriasActivas()) { <div class="aviso">No hay categorías activas. Registre o active una categoría antes de crear productos. <a class="btn btn-primary" routerLink="/categorias/nuevo">Nueva categoría</a></div> } @else {
+<form class="card formulario" [formGroup]="form" (ngSubmit)="guardar()">
+<fieldset [disabled]="guardando()"><label>Categoría<select class="input" formControlName="categoriaId"><option [ngValue]="null" disabled>Seleccione una categoría…</option>@for(c of opciones(); track c.id) { <option [ngValue]="c.id">{{ c.nombre }}{{ c.estado ? '' : ' (inactiva)' }}</option> }</select></label>
+@if (form.controls.categoriaId.touched && form.controls.categoriaId.invalid) { <small class="field-error">Seleccione la categoría del producto.</small> }
+@if (categoriaInactiva()) { <small class="field-error">La categoría elegida está inactiva. Elija una categoría activa.</small> }
+<label>Nombre<input class="input" formControlName="nombre" /></label>
+@if (form.controls.nombre.touched && form.controls.nombre.invalid) { <small class="field-error">Nombre obligatorio, entre 3 y 150 caracteres.</small> }
+<div class="fila"><label>Precio (S/)<input class="input" type="number" min="0.01" step="0.01" formControlName="precio" /></label><label>Stock<input class="input" type="number" min="0" step="1" formControlName="stock" /></label></div>
+@if (form.controls.precio.touched && form.controls.precio.invalid) { <small class="field-error">Precio obligatorio, mínimo 0.01 y hasta dos decimales.</small> }
+@if (form.controls.stock.touched && form.controls.stock.invalid) { <small class="field-error">Stock entero mayor o igual a cero.</small> }
+@for (campo of ['categoriaId','nombre','precio','stock','estado']; track campo) { @if (erroresServidor()[campo]) { <small class="field-error">{{ erroresServidor()[campo] }}</small> } }
+<label class="check"><input type="checkbox" formControlName="estado" /> Activo</label></fieldset>
+<div class="actions"><button class="btn btn-primary" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : (id() ? 'Actualizar' : 'Registrar') }}</button><a class="btn" routerLink="/productos">Cancelar</a></div>
+</form> }

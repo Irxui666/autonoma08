@@ -1,0 +1,1 @@
+.filtros,.paginador,.acciones{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.filtros label{display:flex;flex-direction:column;gap:6px}.paginador{justify-content:flex-end;margin-top:16px}.orden{border:0;background:none;color:inherit;font:inherit;cursor:pointer}.chip{background:#e9f0f9;border-radius:20px;padding:3px 9px;white-space:nowrap}
