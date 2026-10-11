@@ -12,3 +12,7 @@ Frontend: npm ci y npm start -- --port 4200. Backend: Java 21, Oracle local, var
 - docs/informe-hallazgos-s8.md: análisis B1-B5 y riesgos detectados por revisión estática.
 
 El PDF final requiere resultados y capturas reales. No se presentan pruebas unitarias como ejecución manual ni se alteran fechas para simular commits en días distintos. La base usa ddl-auto=update; no incluye el historial Flyway del backend docente.
+
+## Verificación
+Compilación Angular correcta y 20 pruebas aprobadas en 13 archivos. Pull request: https://github.com/Irxui666/autonoma08/pull/1. Las pruebas automatizadas no reemplazan los 18 casos manuales.
+
