@@ -1,0 +1,1 @@
+.formulario{max-width:620px}.formulario fieldset{border:0;padding:0;display:flex;flex-direction:column;gap:12px}.formulario label{display:flex;flex-direction:column;gap:6px}.fila{display:grid;grid-template-columns:1fr 1fr;gap:16px}.formulario .check{flex-direction:row}.aviso{background:#fff6dc;padding:20px;border-radius:10px}.actions{margin-top:16px}

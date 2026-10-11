@@ -1,0 +1,17 @@
+<div class="page-header"><h2>Productos</h2><a class="btn btn-primary" routerLink="nuevo">Nuevo producto</a></div>
+<div class="filtros">
+<label>Categoría<select class="input" (change)="filtrarPorCategoria($any($event.target).value)"><option value="">Todas</option>@for (c of categorias(); track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }</select></label>
+<label>Por página<select class="input" [value]="tamanio()" [disabled]="cargando()" (change)="cambiarTamanio($any($event.target).value)"><option value="5">5</option><option value="10">10</option><option value="20">20</option></select></label>
+</div><p>El filtro por categoría se aplica a la página actual.</p>
+@if (errorCategorias()) { <div class="alerta" role="alert">{{ errorCategorias() }}</div> }
+@if (error()) { <div class="alerta" role="alert">{{ error() }} <button class="btn" (click)="cargar()">Reintentar</button></div> }
+@if (cargando()) { <p role="status">Cargando productos…</p> } @else {
+<div class="table-wrap"><table class="tabla"><thead><tr>
+<th><button class="orden" (click)="ordenar('nombre')">Nombre {{ ordenarPor() === 'nombre' ? direccion() : '' }}</button></th><th>Categoría</th>
+<th><button class="orden" (click)="ordenar('precio')">Precio {{ ordenarPor() === 'precio' ? direccion() : '' }}</button></th>
+<th><button class="orden" (click)="ordenar('stock')">Stock {{ ordenarPor() === 'stock' ? direccion() : '' }}</button></th><th>Estado</th><th>Acciones</th>
+</tr></thead><tbody>@for (p of productos(); track p.id) {
+<tr><td>{{ p.nombre }}</td><td><span class="chip">{{ p.categoriaNombre }}</span></td><td>{{ p.precio | currency:'PEN':'S/ ' }}</td><td>{{ p.stock }}</td><td><span class="badge" [class.inactivo]="!p.estado">{{ p.estado ? 'Activo' : 'Inactivo' }}</span></td><td class="acciones"><a class="btn" [routerLink]="[p.id,'editar']">Editar</a><button class="btn btn-peligro" [disabled]="!p.estado || dandoBaja()" (click)="darDeBaja(p)">Dar de baja</button></td></tr>
+} @empty { <tr><td colspan="6">No hay productos para mostrar.</td></tr> }</tbody></table></div>
+}
+@if (resultado(); as r) { <footer class="paginador"><span>Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} · {{ r.totalElementos }} productos</span><button class="btn" [disabled]="r.pagina === 0 || cargando()" (click)="irA(r.pagina - 1)">Anterior</button><button class="btn" [disabled]="r.ultima || cargando()" (click)="irA(r.pagina + 1)">Siguiente</button></footer> }
