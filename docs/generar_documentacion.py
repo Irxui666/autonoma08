@@ -143,4 +143,9 @@ for i,(name,uid,caption) in enumerate(evidencias,1):
  c.drawImage(ir,(W-iw*scale)/2,35+(avail-ih*scale)/2,width=iw*scale,height=ih*scale)
  c.setFont('Helvetica',8);c.drawString(25,15,'Captura original aportada por el estudiante');c.drawRightString(W-25,15,str(i));c.showPage()
 c.save()
-print('Informe y anexo generados')
+from pypdf import PdfWriter
+unificado=PdfWriter()
+unificado.append(ROOT/'informe-hallazgos-s8.pdf')
+unificado.append(ROOT/'anexo-evidencias-s8.pdf')
+unificado.write(ROOT/'Condori_LP2_S8_Autonoma.pdf')
+print('Informe, anexo y PDF unificado generados')
