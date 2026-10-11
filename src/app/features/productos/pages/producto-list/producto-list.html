@@ -1,8 +1,10 @@
 <div class="page-header"><h2>Productos</h2><a class="btn btn-primary" routerLink="nuevo">Nuevo producto</a></div>
 <div class="filtros">
-<label>Categoría<select class="input" (change)="filtrarPorCategoria($any($event.target).value)"><option value="">Todas</option>@for (c of categorias(); track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }</select></label>
-<label>Por página<select class="input" [value]="tamanio()" [disabled]="cargando()" (change)="cambiarTamanio($any($event.target).value)"><option value="5">5</option><option value="10">10</option><option value="20">20</option></select></label>
-</div><p>El filtro por categoría se aplica a la página actual.</p>
+<label>Categoría<select class="input" [value]="categoriaFiltro() ?? ''" (change)="filtrarPorCategoria($any($event.target).value)"><option value="">Todas</option>@for (c of categorias(); track c.id) { <option [value]="c.id" [selected]="categoriaFiltro() === c.id">{{ c.nombre }}</option> }</select></label>
+<label>Por página<select class="input" [value]="tamanio()" [disabled]="cargando()" (change)="cambiarTamanio($any($event.target).value)"><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="100">100</option></select></label>
+</div>
+@if (desdeCategoria() && categoriaFiltro() && tamanio() === 100 && pagina() === 0) { <p role="status">Mostrando productos de la categoría {{ nombreCategoria() }} en los primeros 100 registros.</p> }
+<p>El filtro por categoría se aplica a la página actual.</p>
 @if (errorCategorias()) { <div class="alerta" role="alert">{{ errorCategorias() }}</div> }
 @if (error()) { <div class="alerta" role="alert">{{ error() }} <button class="btn" (click)="cargar()">Reintentar</button></div> }
 @if (cargando()) { <p role="status">Cargando productos…</p> } @else {

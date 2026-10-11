@@ -42,6 +42,7 @@
               </span>
             </td>
             <td class="acciones">
+              <a class="btn" [routerLink]="'/productos'" [queryParams]="{ categoriaId: c.id }">Ver productos</a>
               <a [routerLink]="[c.id, 'editar']" class="btn">Editar</a>
               <button type="button" class="btn btn-peligro" (click)="eliminar(c)" [disabled]="eliminando()">
                 Eliminar

@@ -1,0 +1,641 @@
+{
+  "info": {
+    "name": "PharmaSoft - S8 Dependencias",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Preparar IDs de prueba y ejecutar manualmente. Incluye aserciones esperadas, no resultados inventados."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1"
+    },
+    {
+      "key": "catActiva",
+      "value": ""
+    },
+    {
+      "key": "catOtra",
+      "value": ""
+    },
+    {
+      "key": "catInactiva",
+      "value": ""
+    },
+    {
+      "key": "catConActivos",
+      "value": ""
+    },
+    {
+      "key": "catCarrera",
+      "value": ""
+    },
+    {
+      "key": "catVacia",
+      "value": ""
+    },
+    {
+      "key": "catSoloInactivos",
+      "value": ""
+    },
+    {
+      "key": "productoCambio",
+      "value": ""
+    },
+    {
+      "key": "productoBaja",
+      "value": ""
+    },
+    {
+      "key": "nombreDuplicado",
+      "value": ""
+    },
+    {
+      "key": "nombreCatConActivos",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Preparación - consultar categorías",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/categorias"
+      }
+    },
+    {
+      "name": "Preparación - consultar productos",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/productos?pagina=0&tamanio=100&ordenarPor=nombre&direccion=asc"
+      }
+    },
+    {
+      "name": "A-01 - Alta válida",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Categoría activa; SPA: POST 201 y fila con categoría",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-01 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-01: HTTP 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-02 - Alta sin categoría",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Formulario nuevo; SPA bloquea sin POST; API 400 con categoriaId",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-02 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-02: HTTP 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-03 - Alta categoría inexistente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Confirmar que 999 no existe; API 404; mensaje Categoria no encontrada",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-03 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": 999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-03: HTTP 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-04 - Alta categoría inactiva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "catInactiva estado false; SPA no la ofrece; API 409",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-04 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catInactiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-04: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-05 - Alta nombre duplicado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Existe producto con nombreBase; SPA muestra mensaje; POST 409",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"{{nombreDuplicado}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-05: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-06 - Alta valores negativos",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Categoría activa; SPA bloquea; API 400 con precio y stock en validationErrors",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-06 {{$timestamp}}\",\n  \"precio\": 0,\n  \"stock\": -1,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-06: HTTP 400', function () { pm.response.to.have.status(400); });",
+              "pm.test('Dos campos inválidos', function () { const e = pm.response.json().validationErrors; pm.expect(e).to.have.property('precio'); pm.expect(e).to.have.property('stock'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-01 - Cambiar categoría",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/{{productoCambio}}",
+        "description": "Producto activo y otra categoría activa; PUT 200; fila muestra nueva categoría",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 C-01 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catOtra}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-01: HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-02 - Cambiar a categoría inactiva",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/{{productoCambio}}",
+        "description": "Producto existente; catInactiva; SPA bloquea; API 409",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 C-02 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catInactiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-02: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-03 - Desactivar categoría con activos",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/categorias/{{catConActivos}}",
+        "description": "Categoría de prueba con producto activo; Regla elegida: impedir desactivación con 409 para proteger ventas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"{{nombreCatConActivos}}\",\n  \"descripcion\": \"Categoría preparada para C-03\",\n  \"estado\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-03: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-04 - Categoría desactualizada en dos pestañas",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Nuevo producto abierto con categoría X; POST 409; no se guarda en categoría inactiva",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 C-04 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catCarrera}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-04: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B-01 - Baja lógica",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/{{productoBaja}}",
+        "description": "productoBaja activo; 204; permanece fila Inactivo y botón deshabilitado"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('B-01: HTTP 204', function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B-02 - Baja repetida",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/{{productoBaja}}",
+        "description": "Ejecutar B-01 primero; 409; mensaje producto ya inactivo"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('B-02: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B-03 - Eliminar categoría vacía",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/categorias/{{catVacia}}",
+        "description": "catVacia sin productos; 204; desaparece en categorías y selector al recargar"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('B-03: HTTP 204', function () { pm.response.to.have.status(204); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B-04 - Eliminar categoría con productos inactivos",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/categorias/{{catSoloInactivos}}",
+        "description": "catSoloInactivos solo contiene productos de baja; 409; conservar clasificación histórica"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('B-04: HTTP 409', function () { pm.response.to.have.status(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-07 - Alta precio con tres decimales",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Categoría activa; SPA bloquea; API debería devolver 400 por precisión monetaria",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-07 {{$timestamp}}\",\n  \"precio\": 1.001,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-07: HTTP 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "C-05 - Editar producto inexistente",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/999",
+        "description": "Confirmar producto 999 inexistente; 404; Producto no encontrado",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 C-05 {{$timestamp}}\",\n  \"precio\": 5.5,\n  \"stock\": 10,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('C-05: HTTP 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "B-05 - Baja producto inexistente",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos/999",
+        "description": "Confirmar producto 999 inexistente; 404; Producto no encontrado"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('B-05: HTTP 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "A-08 - Alta stock cero",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/productos",
+        "description": "Categoría activa; nombre único; 201; stock cero permitido en inventario",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"S8 A-08 {{$timestamp}}\",\n  \"precio\": 0.01,\n  \"stock\": 0,\n  \"estado\": true,\n  \"categoriaId\": {{catActiva}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('A-08: HTTP 201', function () { pm.response.to.have.status(201); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
