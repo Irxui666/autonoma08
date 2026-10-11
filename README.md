@@ -6,7 +6,7 @@ Frontend Angular en raíz; backend Spring Boot en backend/. Base importada de la
 Frontend: npm ci y npm start -- --port 4200. Backend: Java 21, Oracle local, variables DB_USERNAME y DB_PASSWORD; ejecutar mvnw.cmd spring-boot:run desde backend. El desarrollo local se conserva también en SEMANA7/tarea07-frontend y tarea07-backend.
 
 ## Entregables
-- [Informe PDF para el aula](docs/Condori_LP2_S8_Autonoma.pdf): cinco páginas con análisis B1-B5, hallazgos y alcance de la entrega.
+- [PDF único para entregar en el aula](docs/Condori_LP2_S8_Autonoma.pdf): 29 páginas que reúnen el informe de cinco páginas con análisis B1-B5 y las 24 capturas del anexo.
 - [Anexo de evidencias](docs/anexo-evidencias-s8.pdf): 24 capturas originales identificadas por caso.
 - [Matriz de pruebas](docs/matriz-pruebas-s8.md): 14 casos base y cuatro propios, con resultados y enlaces a las capturas.
 - docs/capturas-necesarias-s8.md: instrucciones de captura y preparación.
